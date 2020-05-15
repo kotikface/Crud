@@ -19,7 +19,6 @@ public class CrudServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("fff");
 
         try {
             List<User> list = userService.getAllUser();

@@ -14,13 +14,15 @@ public class UserJdbcDAO implements UserDAO {
     private final Connection connection;
     private final PreparedExecutor preparedExecutor;
     private static UserJdbcDAO userJdbcDAO;
+
     public UserJdbcDAO(Connection connection) {
         this.executor = new Executor(connection);
         this.preparedExecutor = new PreparedExecutor(connection);
         this.connection = connection;
     }
+
     public static UserJdbcDAO getUserJdbcDAO() {
-        if (userJdbcDAO ==null){
+        if (userJdbcDAO == null) {
             return new UserJdbcDAO(DBHelper.getMysqlConnection());
         } else {
             return userJdbcDAO;
