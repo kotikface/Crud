@@ -3,54 +3,33 @@ package dao;
 import entity.User;
 import executor.Executor;
 import executor.PreparedExecutor;
+import util.DBHelper;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO {
+public class UserJdbcDAO implements UserDAO {
     private final Executor executor;
     private final Connection connection;
     private final PreparedExecutor preparedExecutor;
-    private static UserDAO userDAO;
-    public UserDAO(Connection connection) {
+    private static UserJdbcDAO userJdbcDAO;
+
+    public UserJdbcDAO(Connection connection) {
         this.executor = new Executor(connection);
         this.preparedExecutor = new PreparedExecutor(connection);
         this.connection = connection;
     }
-    public static UserDAO getUserDAO() {
-        if (userDAO==null){
-            return new UserDAO(getMysqlConnection());
+
+    public static UserJdbcDAO getUserJdbcDAO() {
+        if (userJdbcDAO == null) {
+            return new UserJdbcDAO(DBHelper.getMysqlConnection());
         } else {
-            return userDAO;
-        }
-    }
-    private static Connection getMysqlConnection() {
-        try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
-
-            StringBuilder url = new StringBuilder();
-
-            url.
-                    append("jdbc:mysql://").        //db type
-                    append("localhost:").           //host name
-                    append("3306/").                //port
-                    append("db_example?").          //db name
-                    append("user=root&").          //login
-                    append("password=Vadim111555999q");
-
-
-            System.out.println("URL: " + url + "\n");
-
-            Connection connection = DriverManager.getConnection(url.toString());
-            return connection;
-        } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new IllegalStateException();
+            return userJdbcDAO;
         }
     }
 
-
+    @Override
     public boolean addUser(User user) {
         try {
             String ex = "INSERT INTO user (`email`, `password`, `age`) VALUES ( ?, ?, ?);";
@@ -60,19 +39,19 @@ public class UserDAO {
         } catch (SQLException e) {
             return false;
         }
-
     }
 
-    public boolean deleteUser(long id) throws SQLException {
+    @Override
+    public boolean deleteUser(long id) {
         try {
             executor.execUpdate("Delete from user where id ='" + id + "'");
             return true;
         } catch (SQLException e) {
             return false;
         }
-
     }
 
+    @Override
     public List<User> selectUsers() throws SQLException {
         List<User> users = new ArrayList<>();
         executor.execQuery("SELECT * FROM user", result -> {
@@ -89,6 +68,7 @@ public class UserDAO {
         return users;
     }
 
+    @Override
     public boolean updateUser(User user) {
         try {
             String ex = "UPDATE user SET email = ?, password = ?, age = ? where id = ?";
@@ -103,8 +83,8 @@ public class UserDAO {
         } catch (SQLException e) {
             return false;
         }
-
     }
+
 
     public void createTable() throws SQLException {
         executor.execUpdate("CREATE TABLE `db_example`.`user` (\n" +
@@ -116,8 +96,13 @@ public class UserDAO {
                 "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);");
     }
 
+
     public void dropTable() throws SQLException {
         executor.execUpdate("DROP TABLE IF EXISTS  user");
     }
+
+
+
+
 
 }

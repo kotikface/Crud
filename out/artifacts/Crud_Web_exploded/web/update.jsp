@@ -1,3 +1,6 @@
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@ page import="servises.UserService" %>
 <%@ page import="entity.User" %>
 <%@ page import="exception.DBException" %>
@@ -14,22 +17,15 @@
     <title>Update</title>
 </head>
 <body>
-<%
-    UserService userService = new UserService();
-    String login = request.getParameter("login");
-    String email = request.getParameter("email");
-    String password = request.getParameter("password");
-    int age = Integer.parseInt(request.getParameter("age"));
-    try {
-        if(userService.updateUser(new User(login, password, email, age))){
-            response.setStatus(200);
-        } else {
-            response.setStatus(400);
-        }
-    } catch (DBException | SQLException e) {
-        response.setStatus(400);
-    }
-    response.sendRedirect("/crud");
-%>
+<form method="POST">
+    <h2> Update user </h2>
+
+    <input type="text" name="id" hidden  value='${requestScope.user.id}'/>
+    <input type="text" name="email"   value='${requestScope.user.email}'/>
+    <input type="text" name="password"   value='${requestScope.user.password}'/>
+    <input type="text" name="age"  value='${requestScope.user.age}'/>
+    <button type="submit" formaction="/update">UPDATE</button>
+</form>
+
 </body>
 </html>

@@ -1,85 +1,82 @@
 package servises;
 
 import dao.UserDAO;
+import dao.UserHibernateDAO;
 import entity.User;
 import exception.DBException;
+import org.hibernate.SessionFactory;
+import util.DBHelper;
 
 import java.util.List;
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class UserService {
-    public boolean deleteClient(String login) throws SQLException {
-        if (getUserDAO().deleteUser(login)) {
+
+    private static UserService userService;
+    private SessionFactory sessionFactory;
+
+    private UserService(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    public static UserService getInstance() {
+        if (userService == null) {
+            return new UserService(DBHelper.getSessionFactory());
+        } else {
+            return userService;
+        }
+    }
+
+    public boolean deleteClient(long id) throws SQLException {
+        UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
+
+        if (userDAO.deleteUser(id)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public List<User> getAllUser() throws DBException {
-        try {
-            return getUserDAO().selectUsers();
-        } catch (SQLException e) {
-            throw new DBException(e);
+
+    public List<User> getAllUser() throws DBException, SQLException {
+        UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
+        return userDAO.selectUsers();
+    }
+
+    public User getUserById(long id) throws SQLException {
+        UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
+        List<User> users = userDAO.selectUsers();
+        for (User user1 : users) {
+            if (user1.getId() == id) {
+                return user1;
+            }
         }
+        return new User();
     }
 
     public boolean addUser(User user) throws DBException, SQLException {
+        UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
         List<User> users = getAllUser();
         if (users.isEmpty()) {
-            getUserDAO().addUser(user);
+            userDAO.addUser(user);
         } else {
             for (User user1 : users) {
-                if (user1.getLogin().equals(user.getLogin())) {
+                if (user1.getId() == user.getId()) {
                     return false;
                 }
             }
-            getUserDAO().addUser(user);
+            userDAO.addUser(user);
         }
         return true;
     }
 
     public boolean updateUser(User user) throws DBException, SQLException {
-        return getUserDAO().updateUser(user);
+        UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
+        return userDAO.updateUser(user);
     }
 
-    private static Connection getMysqlConnection() {
-        try {
-            DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
-
-            StringBuilder url = new StringBuilder();
-
-            url.
-                    append("jdbc:mysql://").        //db type
-                    append("localhost:").           //host name
-                    append("3306/").                //port
-                    append("db_example?").          //db name
-                    append("user=root&").          //login
-                    append("password=Vadim111555999q");
 
 
-            System.out.println("URL: " + url + "\n");
 
-            Connection connection = DriverManager.getConnection(url.toString());
-            return connection;
-        } catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new IllegalStateException();
-        }
-    }
 
-    public void createTable() throws SQLException {
-        getUserDAO().createTable();
-    }
-
-    public void dropTable() throws SQLException {
-        getUserDAO().dropTable();
-    }
-
-    private static UserDAO getUserDAO() {
-        return new UserDAO(getMysqlConnection());
-    }
 }

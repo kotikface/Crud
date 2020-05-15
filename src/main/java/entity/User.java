@@ -1,21 +1,31 @@
 package entity;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String login;
-    private String password;
     private String email;
+    private String password;
     private int age;
 
     public User() {
     }
 
-    public User(String login, String password, String email, int age) {
-        this.login = login;
-        this.password = password;
+    public User(long id, String email, String password, int age) {
+        this.id = id;
         this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
+    public User(String email, String password, int age) {
+        this.email = email;
+        this.password = password;
         this.age = age;
     }
 
@@ -23,9 +33,8 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", age=" + age +
                 '}';
     }
@@ -38,13 +47,6 @@ public class User {
         this.id = id;
     }
 
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
 
     public String getPassword() {
         return password;
@@ -76,12 +78,12 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return getAge() == user.getAge() &&
-                Objects.equals(getLogin(), user.getLogin()) &&
+                Objects.equals(getId(), user.getId()) &&
                 Objects.equals(getEmail(), user.getEmail());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLogin(), getEmail(), getAge());
+        return Objects.hash(getId(), getEmail(), getAge());
     }
 }
