@@ -19,6 +19,7 @@ public class UserJdbcDAO implements UserDAO {
         this.executor = new Executor(connection);
         this.preparedExecutor = new PreparedExecutor(connection);
         this.connection = connection;
+
     }
 
     public static UserJdbcDAO getUserJdbcDAO() {
@@ -32,9 +33,9 @@ public class UserJdbcDAO implements UserDAO {
     @Override
     public boolean addUser(User user) {
         try {
-            String ex = "INSERT INTO user (`email`, `password`, `age`) VALUES ( ?, ?, ?);";
+            String ex = "INSERT INTO user (`email`, `password`, `age`, `role`) VALUES ( ?, ?, ?, ?);";
             preparedExecutor.setEx(ex);
-            preparedExecutor.execUpdate(user.getEmail(), user.getPassword(), user.getAge());
+            preparedExecutor.execUpdate(user.getEmail(), user.getPassword(), user.getAge(), user.getRole());
             return true;
         } catch (SQLException e) {
             return false;
@@ -61,6 +62,7 @@ public class UserJdbcDAO implements UserDAO {
                 client.setEmail(result.getString(2));
                 client.setPassword(result.getString(3));
                 client.setAge(result.getInt(4));
+                client.setRole(result.getString(5));
                 users.add(client);
             }
             return users;
@@ -92,6 +94,7 @@ public class UserJdbcDAO implements UserDAO {
                 "  `email` VARCHAR(256) NULL,\n" +
                 "  `password` VARCHAR(256) NULL,\n" +
                 "  `age` INT NULL,\n" +
+                "   role VARCHAR(256) NULL ," +
                 "  PRIMARY KEY (`id`),\n" +
                 "  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);");
     }

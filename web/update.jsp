@@ -24,6 +24,7 @@
     <input type="text" name="email"   value='${requestScope.user.email}'/>
     <input type="text" name="password"   value='${requestScope.user.password}'/>
     <input type="text" name="age"  value='${requestScope.user.age}'/>
+    <input type="text" name="role" value='${requestScope.user.role}'>
     <button type="submit" formaction="/update">UPDATE</button>
 </form>
 

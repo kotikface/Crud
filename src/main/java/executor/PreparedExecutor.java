@@ -17,11 +17,12 @@ public class PreparedExecutor {
         this.ex = ex;
     }
 
-    public void execUpdate(String email, String password, int age) throws SQLException {
+    public void execUpdate(String email, String password, int age, String role) throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(ex);
         preparedStatement.setString(1, email);
         preparedStatement.setString(2, password);
         preparedStatement.setInt(3, age);
+        preparedStatement.setString(4,role);
         preparedStatement.executeUpdate();
         preparedStatement.close();
     }

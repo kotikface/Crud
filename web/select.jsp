@@ -20,6 +20,7 @@
     <input type="text" name="email" placeholder="email"/>
     <input type="text" name="password" placeholder="password"/>
     <input type="text" name="age" placeholder="age"/>
+    <input type="text" name="role" placeholder="role"/>
     <button type="submit" formaction="/crud">INSERT</button>
 
     <table>
@@ -46,6 +47,7 @@
     </table>
 
 </form>
+<a href="web/user.jsp">User INFO</a>
 
 </body>
 </html>

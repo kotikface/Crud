@@ -1,5 +1,7 @@
 package servlets;
 
+import dao.UserDaoFactory;
+import dao.UserJdbcDAO;
 import entity.User;
 import exception.DBException;
 import org.w3c.dom.ls.LSOutput;
@@ -14,8 +16,28 @@ import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet("/crud")
-public class CrudServlet extends HttpServlet {
+public class CrudServlet extends HttpServlet  {
     private final UserService userService = UserService.getInstance();
+
+    @Override
+    public void destroy() {
+        if(UserService.getPropertyDAO().equalsIgnoreCase("UserJdbcDAO")){
+            try {
+                UserJdbcDAO.getUserJdbcDAO().dropTable();
+            } catch (SQLException ignored) { }
+        }
+        super.destroy();
+    }
+
+    @Override
+    public void init() throws ServletException {
+        if (UserService.getPropertyDAO().equalsIgnoreCase("UserJdbcDAO")){
+            try {
+                UserJdbcDAO.getUserJdbcDAO().createTable();
+            } catch (SQLException ignored) { }
+        }
+        super.init();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,8 +57,9 @@ public class CrudServlet extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         int age = Integer.parseInt(req.getParameter("age"));
+        String role = req.getParameter("role");
         try {
-            if (userService.addUser(new User(email, password, age))) {
+            if (userService.addUser(new User(email, password, age, role))) {
                 resp.setStatus(200);
             } else {
                 resp.setStatus(400);

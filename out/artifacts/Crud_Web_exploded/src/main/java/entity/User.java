@@ -12,21 +12,25 @@ public class User {
     private String email;
     private String password;
     private int age;
+    private String role;
+
 
     public User() {
     }
 
-    public User(long id, String email, String password, int age) {
+    public User(long id, String email, String password, int age, String role) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
+        this.role = role;
     }
 
-    public User(String email, String password, int age) {
+    public User(String email, String password, int age, String role) {
         this.email = email;
         this.password = password;
         this.age = age;
+        this.role = role;
     }
 
     @Override
@@ -36,6 +40,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", age=" + age +
+                ", role='" + role + '\'' +
                 '}';
     }
 
@@ -70,6 +75,14 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     @Override

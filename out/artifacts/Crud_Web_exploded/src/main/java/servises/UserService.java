@@ -1,20 +1,35 @@
 package servises;
 
 import dao.UserDAO;
-import dao.UserHibernateDAO;
+import dao.UserDaoFactory;
 import entity.User;
 import exception.DBException;
-import org.hibernate.SessionFactory;
-import util.DBHelper;
 
+import java.io.*;
 import java.util.List;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class UserService {
-    private static final UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
-    private static  UserService userService;
 
-    private UserService() { }
+    private static final UserDAO userDAO = UserDaoFactory.createDAO(getPropertyDAO());
+    private static UserService userService;
+    public static String getPropertyDAO() {
+        Properties properties = new Properties();
+        String property = null;
+        try {
+            properties.load(UserService.class.getClassLoader().getResourceAsStream("dao.properties"));
+            property = properties.getProperty("daoType");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return property;
+    }
+
+
+
+    private UserService() {
+    }
 
     public static UserService getInstance() {
         if (userService == null) {
@@ -25,8 +40,6 @@ public class UserService {
     }
 
     public boolean deleteClient(long id) throws SQLException {
-
-
         if (userDAO.deleteUser(id)) {
             return true;
         } else {
@@ -66,7 +79,6 @@ public class UserService {
     }
 
     public boolean updateUser(User user) throws DBException, SQLException {
-
         return userDAO.updateUser(user);
     }
 
