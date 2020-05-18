@@ -18,6 +18,24 @@ public class CrudServlet extends HttpServlet {
     private final UserService userService = UserService.getInstance();
 
     @Override
+    public void destroy() {
+        try {
+            userService.dropTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            userService.createTable();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         try {

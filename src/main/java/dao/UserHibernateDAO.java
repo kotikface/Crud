@@ -66,4 +66,14 @@ public class UserHibernateDAO implements UserDAO {
         session.close();
         return true;
     }
+
+    @Override
+    public void createTable() {
+
+    }
+
+    @Override
+    public void dropTable() {
+
+    }
 }

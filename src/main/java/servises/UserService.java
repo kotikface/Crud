@@ -1,6 +1,7 @@
 package servises;
 
 import dao.UserDAO;
+import dao.UserDaoFactory;
 import dao.UserHibernateDAO;
 import entity.User;
 import exception.DBException;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.sql.SQLException;
 
 public class UserService {
-    private static final UserDAO userDAO = UserHibernateDAO.getUserHibernateDAO();
+    private static final UserDAO userDAO = UserDaoFactory.createDAO();
     private static  UserService userService;
 
     private UserService() { }
@@ -69,7 +70,12 @@ public class UserService {
 
         return userDAO.updateUser(user);
     }
-
+    public void createTable() throws SQLException {
+        userDAO.createTable();
+    }
+    public void dropTable() throws SQLException {
+        userDAO.dropTable();
+    }
 
 
 
