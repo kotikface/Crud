@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: SmartBook
@@ -11,7 +12,10 @@
     <title>User INFO</title>
 </head>
 <body>
-<%=session.getAttribute("user").toString()%>
-<a href="/logout">Logout</a>
+<form action="/user" method="post">
+    <c:out value="${user}"/>
+    <button type="submit">logout</button>
+</form>
+
 </body>
 </html>

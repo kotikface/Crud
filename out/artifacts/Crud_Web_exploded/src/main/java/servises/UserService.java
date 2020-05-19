@@ -12,19 +12,9 @@ import java.util.Properties;
 
 public class UserService {
 
-    private static final UserDAO userDAO = UserDaoFactory.createDAO(getPropertyDAO());
+    private static final UserDAO userDAO = UserDaoFactory.createDAO();
     private static UserService userService;
-    public static String getPropertyDAO() {
-        Properties properties = new Properties();
-        String property = null;
-        try {
-            properties.load(UserService.class.getClassLoader().getResourceAsStream("dao.properties"));
-            property = properties.getProperty("daoType");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return property;
-    }
+
 
 
 
@@ -83,7 +73,11 @@ public class UserService {
     }
 
 
+    public void createTable() throws SQLException {
+        userDAO.createTable();
+    }
 
-
-
+    public void dropTable() throws SQLException {
+        userDAO.dropTable();
+    }
 }

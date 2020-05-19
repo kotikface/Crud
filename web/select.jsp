@@ -21,7 +21,7 @@
     <input type="text" name="password" placeholder="password"/>
     <input type="text" name="age" placeholder="age"/>
     <input type="text" name="role" placeholder="role"/>
-    <button type="submit" formaction="/crud">INSERT</button>
+    <button type="submit" formaction="/admin/crud">INSERT</button>
 
     <table>
         <tr>
@@ -38,8 +38,8 @@
                 <td>${user1.age}</td>
 
                 <td>
-                    <a href="/update?id=${user1.id}">Update</a>
-                    <a href="/delete?id=${user1.id}">DELETE</a>
+                    <a href="/admin/update?id=${user1.id}">Update</a>
+                    <a href="/admin/delete?id=${user1.id}">DELETE</a>
                 </td>
             </tr>
         </c:forEach>
@@ -47,7 +47,7 @@
     </table>
 
 </form>
-<a href="web/user.jsp">User INFO</a>
+<a href="/web/user.jsp">User INFO</a>
 
 </body>
 </html>

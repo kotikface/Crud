@@ -12,10 +12,10 @@
 </head>
 <body>
 <h1>Авторизация</h1>
-<form method="post">
+<form method="get">
     <input type="text" placeholder="login" name="login"/>
     <input type="password" placeholder="password" name="password"/>
-    <button type="submit" formaction="/filter">Auth</button>
+    <button type="submit" formaction="/admin/crud">Auth</button>
 </form>
 </body>
 </html>

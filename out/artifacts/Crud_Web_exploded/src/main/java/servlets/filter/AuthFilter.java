@@ -15,23 +15,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebFilter("/filter")
+@WebFilter("/admin/crud")
 public class AuthFilter implements Filter {
     private final UserService userService = UserService.getInstance();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        try {
-            if (UserService.getPropertyDAO().equalsIgnoreCase("UserJdbcDAO")){
-                try {
-                    UserJdbcDAO.getUserJdbcDAO().createTable();
-                } catch (SQLException ignored) { }
-            }
-            userService.addUser(new User( "admin", "admin", 23, "admin" ));
-            userService.addUser(new User("user", "user", 23, "user"));
-        } catch (DBException | SQLException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -40,24 +30,34 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         HttpSession session = ((HttpServletRequest) servletRequest).getSession();
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
-        try {
-            List<User> userList = userService.getAllUser();
-            for (User user: userList) {
-                if(login.equals(user.getEmail()) && password.equals(user.getPassword())) {
-                    String role = user.getRole();
-                    if(role.equals("admin")){
+        User userSession = (User) session.getAttribute("user");
+        if(userSession == null){
+            String login = req.getParameter("login");
+            String password = req.getParameter("password");
+            try {
+                List<User> userList = userService.getAllUser();
+                for (User user: userList) {
+                    if(login.equals(user.getEmail()) && password.equals(user.getPassword())) {
+                        String role = user.getRole();
                         session.setAttribute("user", user);
-                        res.sendRedirect("/crud");
-                    } else if(role.equals("user")) {
-                        session.setAttribute("user", user);
-                        res.sendRedirect("web/user.jsp");
+                        if(role.equals("admin")) {
+                            filterChain.doFilter(servletRequest,servletResponse);
+                        } else if(role.equals("user")) {
+                            res.sendRedirect("/user");
+                        }
                     }
                 }
+            } catch (DBException | SQLException e) {
+                e.printStackTrace();
             }
-        } catch (DBException | SQLException e) {
-            e.printStackTrace();
+        } else {
+            if(userSession.getRole().equals("user")){
+                res.sendRedirect("/user");
+            } else if(userSession.getRole().equals("admin")){
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
+
         }
+
     }
 }

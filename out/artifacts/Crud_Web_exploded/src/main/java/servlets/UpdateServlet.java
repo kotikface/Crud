@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("/update")
+@WebServlet("/admin/update")
 public class UpdateServlet extends HttpServlet {
     private final UserService userService= UserService.getInstance();
 
@@ -26,7 +26,7 @@ public class UpdateServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        req.getRequestDispatcher("web/update.jsp").forward(req, resp);
+        req.getRequestDispatcher("/web/update.jsp").forward(req, resp);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class UpdateServlet extends HttpServlet {
         } catch (DBException | SQLException e) {
             resp.setStatus(400);
         }
-        resp.sendRedirect("/crud");
+        resp.sendRedirect("/admin/crud");
 
     }
 

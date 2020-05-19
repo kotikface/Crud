@@ -4,7 +4,6 @@ import dao.UserDaoFactory;
 import dao.UserJdbcDAO;
 import entity.User;
 import exception.DBException;
-import org.w3c.dom.ls.LSOutput;
 import servises.UserService;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,29 +14,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet("/crud")
+@WebServlet("/admin/crud")
 public class CrudServlet extends HttpServlet  {
     private final UserService userService = UserService.getInstance();
 
-    @Override
-    public void destroy() {
-        if(UserService.getPropertyDAO().equalsIgnoreCase("UserJdbcDAO")){
-            try {
-                UserJdbcDAO.getUserJdbcDAO().dropTable();
-            } catch (SQLException ignored) { }
-        }
-        super.destroy();
-    }
-
-    @Override
-    public void init() throws ServletException {
-        if (UserService.getPropertyDAO().equalsIgnoreCase("UserJdbcDAO")){
-            try {
-                UserJdbcDAO.getUserJdbcDAO().createTable();
-            } catch (SQLException ignored) { }
-        }
-        super.init();
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,7 +29,7 @@ public class CrudServlet extends HttpServlet  {
         } catch (DBException | SQLException e) {
             resp.setStatus(400);
         }
-        req.getRequestDispatcher("web/select.jsp").forward(req, resp);
+        req.getRequestDispatcher("/web/select.jsp").forward(req, resp);
     }
 
     @Override
@@ -67,7 +47,7 @@ public class CrudServlet extends HttpServlet  {
         } catch (DBException | SQLException e) {
             resp.setStatus(400);
         }
-        resp.sendRedirect("/crud");
+        resp.sendRedirect("/admin/crud");
     }
 
 }
